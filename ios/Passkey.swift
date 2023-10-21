@@ -5,7 +5,7 @@ class Passkey: NSObject {
   var passKeyDelegate: PasskeyDelegate?;
 
   @objc(register:withChallenge:withDisplayName:withUserId:withSecurityKey:withResolver:withRejecter:)
-  func register(_ identifier: String, challenge: String, displayName: String, userId: String, securityKey: Bool, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
+  func register(_ identifier: String, challenge: String, displayName: String, userId: String, securityKey: Bool, largeBlob: String?, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
     // Convert challenge and userId to correct type
     guard let challengeData: Data = Data(base64Encoded: challenge) else {
       reject(PassKeyError.invalidChallenge.rawValue, PassKeyError.invalidChallenge.rawValue, nil);
@@ -28,6 +28,11 @@ class Passkey: NSObject {
         // Create a new registration request without security key
         let platformProvider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: identifier);
         let authRequest = platformProvider.createCredentialRegistrationRequest(challenge: challengeData, name: displayName, userID: userIdData);
+          
+        if let largeBlob = largeBlob, let largeBlobData = Data(base64Encoded: largeBlob) {
+            authRequest.largeBlob = ASAuthorizationPublicKeyCredentialLargeBlobRegistrationInput(data: largeBlobData)
+        }
+          
         authController = ASAuthorizationController(authorizationRequests: [authRequest]);
       }
 

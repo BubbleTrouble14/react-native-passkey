@@ -17,7 +17,8 @@ export class PasskeyiOS {
    */
   public static async register(
     request: PasskeyRegistrationRequest,
-    withSecurityKey = false
+    withSecurityKey = false,
+    largeBlob?: string // Adding the largeBlob parameter here
   ): Promise<PasskeyRegistrationResult> {
     // Extract the required data from the attestation request
     const { rpId, challenge, name, userID } =
@@ -29,7 +30,8 @@ export class PasskeyiOS {
         challenge,
         name,
         userID,
-        withSecurityKey
+        withSecurityKey,
+        largeBlob // Passing the largeBlob here to the native module
       );
       return this.handleNativeRegistrationResult(response);
     } catch (error) {

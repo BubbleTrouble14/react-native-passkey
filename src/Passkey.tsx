@@ -25,7 +25,7 @@ export class Passkey {
     if (Platform.OS === 'android') {
       return PasskeyAndroid.register(request);
     }
-    return PasskeyiOS.register(request, withSecurityKey);
+    return PasskeyiOS.register(request, withSecurityKey, request.largeBlob);
   }
 
   /**
@@ -110,6 +110,7 @@ export interface PasskeyRegistrationRequest {
   };
   attestation?: string;
   extensions?: Record<string, unknown>;
+  largeBlob?: string; // New property for the large blob data
 }
 
 /**

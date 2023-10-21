@@ -5,6 +5,7 @@
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>webcredentials:example.domain</string>
+		<string>webcredentials:apple.com</string>
 	</array>
 </dict>
 </plist>

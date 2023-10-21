@@ -3,8 +3,8 @@ import * as React from 'react';
 import { StyleSheet, View, Button, TextInput, Alert } from 'react-native';
 import { Passkey } from 'react-native-passkey';
 
-import RegRequest from '../../src/__tests__/testData/RegRequest.json';
-import AuthRequest from '../../src/__tests__/testData/AuthRequest.json';
+import RegRequest from './RegRequest.json';
+import AuthRequest from './AuthRequest.json';
 
 export default function App() {
   const [email, setEmail] = React.useState('');
