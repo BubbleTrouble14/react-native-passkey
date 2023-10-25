@@ -8,7 +8,7 @@ RCT_EXTERN_METHOD(register:(NSString)identifier
                   withDisplayName:(NSString) displayName
                   withUserId:(NSString) userId
                   withSecurityKey: (BOOL) securityKey
-                  withLargeBlob:(NSString *)largeBlob // Added line
+                  withLargeBlobSupport:(NSString)largeBlobSupport
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 

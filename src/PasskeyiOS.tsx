@@ -3,6 +3,7 @@ import type {
   PasskeyRegistrationRequest,
   PasskeyAuthenticationRequest,
   PasskeyAuthenticationResult,
+  LargeBlobExtension,
 } from './Passkey';
 import { handleNativeError } from './PasskeyError';
 import { NativePasskey } from './NativePasskey';
@@ -17,11 +18,10 @@ export class PasskeyiOS {
    */
   public static async register(
     request: PasskeyRegistrationRequest,
-    withSecurityKey = false,
-    largeBlob?: string // Adding the largeBlob parameter here
+    withSecurityKey = false
   ): Promise<PasskeyRegistrationResult> {
     // Extract the required data from the attestation request
-    const { rpId, challenge, name, userID } =
+    const { rpId, challenge, name, userID, largeBlobSupport } =
       this.prepareRegistrationRequest(request);
 
     try {
@@ -31,7 +31,7 @@ export class PasskeyiOS {
         name,
         userID,
         withSecurityKey,
-        largeBlob // Passing the largeBlob here to the native module
+        largeBlobSupport
       );
       return this.handleNativeRegistrationResult(response);
     } catch (error) {
@@ -45,6 +45,19 @@ export class PasskeyiOS {
   private static prepareRegistrationRequest(
     request: PasskeyRegistrationRequest
   ): PasskeyiOSRegistrationData {
+    const extentions = request.extensions;
+    if (extentions && extentions.largeBlob) {
+      const largeBlob = extentions.largeBlob as LargeBlobExtension;
+      if (largeBlob) {
+        return {
+          rpId: request.rp.id,
+          challenge: request.challenge,
+          name: request.user.displayName,
+          userID: request.user.id,
+          largeBlobSupport: largeBlob.support,
+        };
+      }
+    }
     return {
       rpId: request.rp.id,
       challenge: request.challenge,
@@ -116,6 +129,7 @@ interface PasskeyiOSRegistrationData {
   challenge: string;
   name: string;
   userID: string;
+  largeBlobSupport?: 'preferred' | 'required';
 }
 
 interface PasskeyiOSRegistrationResult {

@@ -25,7 +25,7 @@ export class Passkey {
     if (Platform.OS === 'android') {
       return PasskeyAndroid.register(request);
     }
-    return PasskeyiOS.register(request, withSecurityKey, request.largeBlob);
+    return PasskeyiOS.register(request, withSecurityKey);
   }
 
   /**
@@ -84,6 +84,10 @@ interface PublicKeyCredentialDescriptor {
   transports?: Array<string>;
 }
 
+export interface LargeBlobExtension {
+  support: 'preferred' | 'required';
+}
+
 /**
  * The FIDO2 Attestation Request
  * https://www.w3.org/TR/webauthn-2/#dictionary-makecredentialoptions
@@ -109,8 +113,7 @@ export interface PasskeyRegistrationRequest {
     userVerification?: string;
   };
   attestation?: string;
-  extensions?: Record<string, unknown>;
-  largeBlob?: string; // New property for the large blob data
+  extensions?: Record<string, unknown | LargeBlobExtension>;
 }
 
 /**

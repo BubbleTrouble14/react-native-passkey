@@ -27,5 +27,10 @@
     "requireResidentKey": true,
     "residentKey": "required",
     "userVerification": "required"
+  },
+  "extensions": {
+    "largeBlob": {
+      "support": "preferred"
+    }
   }
 }
