@@ -4,8 +4,7 @@
 <dict>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>webcredentials:example.domain</string>
-		<string>webcredentials:apple.com</string>
+		<string>webcredentials:mintgarden.io</string>
 	</array>
 </dict>
 </plist>

@@ -126,6 +126,9 @@ export interface PasskeyRegistrationResult {
   response: {
     clientDataJSON: string;
     attestationObject: string;
+    largeBlob: {
+      supported: boolean;
+    };
   };
 }
 
@@ -154,5 +157,9 @@ export interface PasskeyAuthenticationResult {
     clientDataJSON: string;
     signature: string;
     userHandle: string;
+    largeBlob?: {
+      read?: string;
+      written?: boolean;
+    };
   };
 }

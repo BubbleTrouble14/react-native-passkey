@@ -1,8 +1,8 @@
 {
-  "challenge": "nhkQXfE59Jb97VyyNJkvDiXucMEvltduvcrDmGrODHY",
+  "challenge": "test",
   "rp": {
     "name": "Passkey Test",
-    "id": "com.apple.store.Jolly"
+    "id": "mintgarden.io"
   },
   "user": {
     "id": "2HzoHm_hY0CjuEESY9tY6-3SdjmNHOoNqaPDcZGzsr0",

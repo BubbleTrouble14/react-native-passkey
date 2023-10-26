@@ -7,7 +7,7 @@ RCT_EXTERN_METHOD(register:(NSString)identifier
                   withChallenge:(NSString)challenge
                   withDisplayName:(NSString) displayName
                   withUserId:(NSString) userId
-                  withSecurityKey: (BOOL) securityKey
+                  withSecurityKey:(BOOL) securityKey
                   withLargeBlobSupport:(NSString)largeBlobSupport
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
@@ -15,6 +15,7 @@ RCT_EXTERN_METHOD(register:(NSString)identifier
 RCT_EXTERN_METHOD(authenticate:(NSString)identifier
                   withChallenge:(NSString)challenge
                   withSecurityKey:(BOOL) securityKey
+                  withLargeBlob:(NSDictionary)largeBlob
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 

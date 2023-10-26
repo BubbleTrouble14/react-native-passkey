@@ -16,6 +16,8 @@ export default function App() {
         ...RegRequest,
       };
 
+      console.log(requestJson);
+
       const result = await Passkey.register(requestJson);
 
       console.log('Registration result: ', result);

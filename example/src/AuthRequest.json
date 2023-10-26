@@ -1,7 +1,13 @@
 {
-  "challenge": "T1xCsnxM2DNL2KdK5CLa6fMhD7OBqho6syzInk_n-Uo",
+  "challenge": "test",
   "allowCredentials": [],
   "timeout": 1800000,
   "userVerification": "required",
-  "rpId": "com.passkeyTest"
+  "rpId": "mintgarden.io",
+  "extensions": {
+    "largeBlob": {
+      // "write": "Um9uYWxk"
+      "read": true
+    }
+  }
 }

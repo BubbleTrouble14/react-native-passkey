@@ -78,6 +78,9 @@ export class PasskeyiOS {
       response: {
         clientDataJSON: result.response.rawClientDataJSON,
         attestationObject: result.response.rawAttestationObject,
+        largeBlob: {
+          supported: result.response.largeBlobSupported,
+        },
       },
     };
   }
@@ -97,7 +100,8 @@ export class PasskeyiOS {
       const response = await NativePasskey.authenticate(
         request.rpId,
         request.challenge,
-        withSecurityKey
+        withSecurityKey,
+        request.extensions?.largeBlob
       );
       return this.handleNativeAuthenticationResult(response);
     } catch (error) {
@@ -119,6 +123,10 @@ export class PasskeyiOS {
         authenticatorData: result.response.rawAuthenticatorData,
         signature: result.response.signature,
         userHandle: result.userID,
+        largeBlob: {
+          read: result.response.read,
+          written: result.response.write,
+        },
       },
     };
   }
@@ -137,6 +145,7 @@ interface PasskeyiOSRegistrationResult {
   response: {
     rawAttestationObject: string;
     rawClientDataJSON: string;
+    largeBlobSupported: boolean;
   };
 }
 
@@ -147,5 +156,7 @@ interface PasskeyiOSAuthenticationResult {
     rawAuthenticatorData: string;
     rawClientDataJSON: string;
     signature: string;
+    read?: string;
+    write?: boolean;
   };
 }

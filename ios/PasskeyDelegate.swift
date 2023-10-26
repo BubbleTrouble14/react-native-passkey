@@ -4,12 +4,12 @@ import AuthenticationServices
 @objc(PasskeyDelegate)
 class PasskeyDelegate: NSObject, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
   private var _completion: (_ error: Error?, _ result: PassKeyResult?) -> Void;
-  
+
   // Initializes delegate with a completion handler (callback function)
   init(completionHandler: @escaping (_ error: Error?, _ result: PassKeyResult?) -> Void) {
     self._completion = completionHandler;
   }
-  
+
   // Perform the authorization request for a given ASAuthorizationController instance
   @available(iOS 15.0, *)
   @objc(performAuthForController:)
@@ -18,12 +18,12 @@ class PasskeyDelegate: NSObject, ASAuthorizationControllerDelegate, ASAuthorizat
     controller.presentationContextProvider = self;
     controller.performRequests();
   }
-  
+
   @available(iOS 13.0, *)
   func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
     return UIApplication.shared.keyWindow!;
   }
-  
+
   @available(iOS 13.0, *)
   func authorizationController(
       controller: ASAuthorizationController,
@@ -38,7 +38,7 @@ class PasskeyDelegate: NSObject, ASAuthorizationControllerDelegate, ASAuthorizat
     // Check if Passkeys are supported on this OS version
     if #available(iOS 15.0, *) {
       /** We need to determine whether the request was a registration or authentication request and if a security key was used or not*/
-      
+
       // Request was a registration request
       if let credential = authorization.credential as? ASAuthorizationPlatformPublicKeyCredentialRegistration {
         self.handlePlatformPublicKeyRegistrationResponse(credential: credential)
@@ -59,47 +59,69 @@ class PasskeyDelegate: NSObject, ASAuthorizationControllerDelegate, ASAuthorizat
       self._completion(PassKeyError.notSupported, nil);
     }
   }
-  
+
   @available(iOS 15.0, *)
   func handlePlatformPublicKeyRegistrationResponse(credential: ASAuthorizationPlatformPublicKeyCredentialRegistration) -> Void {
     if let rawAttestationObject = credential.rawAttestationObject {
+        var isSupported = false;  // Define largeBlob here to make it accessible outside of the iOS 17.0 check
+
+        if #available(iOS 17.0, *) {
+            isSupported = credential.largeBlob?.isSupported ?? false
+        }
       // Parse the authorization credential and resolve the callback
       let registrationResult = PassKeyRegistrationResult(credentialID: credential.credentialID,
                                                          rawAttestationObject: rawAttestationObject,
-                                                         rawClientDataJSON: credential.rawClientDataJSON);
+                                                         rawClientDataJSON: credential.rawClientDataJSON,
+                                                         largeBlobSupported: isSupported);
       self._completion(nil, PassKeyResult(registrationResult: registrationResult));
     } else {
       // Authorization credential was malformed, throw an error
       self._completion(PassKeyError.requestFailed, nil);
     }
   }
-  
+
   @available(iOS 15.0, *)
   func handleSecurityKeyPublicKeyRegistrationResponse(credential: ASAuthorizationSecurityKeyPublicKeyCredentialRegistration) -> Void {
     if let rawAttestationObject = credential.rawAttestationObject {
       // Parse the authorization credential and resolve the callback
       let registrationResult = PassKeyRegistrationResult(credentialID: credential.credentialID,
                                                          rawAttestationObject: rawAttestationObject,
-                                                         rawClientDataJSON: credential.rawClientDataJSON);
+                                                         rawClientDataJSON: credential.rawClientDataJSON,
+                                                         largeBlobSupported: false);
       self._completion(nil, PassKeyResult(registrationResult: registrationResult));
     } else {
       // Authorization credential was malformed, throw an error
       self._completion(PassKeyError.requestFailed, nil);
     }
   }
-  
+
   @available(iOS 15.0, *)
   func handlePlatformPublicKeyAssertionResponse(credential: ASAuthorizationPlatformPublicKeyCredentialAssertion) -> Void {
-    // Parse the authorization credential and resolve the callback
+  var largeBlob: PassKeyAssertionResult.OperationResult? // Define largeBlob here to make it accessible outside of the iOS 17.0 check, also it should be optional to handle unavailability
+
+
+      if #available(iOS 17.0, *) {
+          switch credential.largeBlob?.result {
+          case .read(let data):
+              largeBlob = .read(data: data)
+          case .write(let success):
+              largeBlob = .write(success: success)
+          case .none:
+              largeBlob = nil
+          }
+      }
+
     let assertionResult = PassKeyAssertionResult(credentialID: credential.credentialID,
                                                  rawAuthenticatorData: credential.rawAuthenticatorData,
                                                  rawClientDataJSON: credential.rawClientDataJSON,
                                                  signature: credential.signature,
-                                                 userID: credential.userID);
+                                                 userID: credential.userID,
+                                                 largeBlob: largeBlob);
     self._completion(nil, PassKeyResult(assertionResult: assertionResult));
   }
-  
-  
+
+
+
   @available(iOS 15.0, *)
   func handleSecurityKeyPublicKeyAssertionResponse(credential: ASAuthorizationSecurityKeyPublicKeyCredentialAssertion) -> Void {
     // Parse the authorization credential and resolve the callback
