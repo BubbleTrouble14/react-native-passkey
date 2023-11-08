@@ -6,8 +6,7 @@
   "rpId": "mintgarden.io",
   "extensions": {
     "largeBlob": {
-      // "write": "Um9uYWxk"
-      "read": true
+      "write": "Um9uYWxk"
     }
   }
 }

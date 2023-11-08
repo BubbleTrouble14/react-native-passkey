@@ -1,0 +1,12 @@
+{
+  "challenge": "test",
+  "allowCredentials": [],
+  "timeout": 1800000,
+  "userVerification": "required",
+  "rpId": "mintgarden.io",
+  "extensions": {
+    "largeBlob": {
+      "read": true
+    }
+  }
+}
